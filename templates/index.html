@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HILAL-CHECKER | Dibalik Data</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>HILAL-CHECKER🌙</h1>
+        <p>Predictive Astronomy Engine | <b>Dibalik Data</b></p>
+        
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+            <div style="background: #F8F9FA; padding: 8px 15px; border-radius: 20px; border: 1px solid #ccc; font-size: 0.95rem;">
+                📅 <strong id="tglMasehi">Memuat...</strong>
+            </div>
+            <div style="background: #E8F5E9; padding: 8px 15px; border-radius: 20px; border: 1px solid #c8e6c9; font-size: 0.95rem; color: #2E7D32;">
+                🌙 <strong id="tglHijriah">Memuat API...</strong>
+            </div>
+            <div style="background: #FFF3E0; padding: 8px 15px; border-radius: 20px; border: 1px solid #ffe0b2; font-size: 0.95rem; color: #E65100;">
+                ⏰ <strong id="liveClock" style="font-family: monospace; letter-spacing: 1px;">00:00:00 WIB</strong>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="landingDashboard" class="dashboard-grid">
+            
+            <div class="left-panel">
+                <div class="action-card">
+                    <h3>Analisis Visibilitas Hilal</h3>
+                    <p>Sistem akan mensimulasikan 12.765 titik koordinat di seluruh wilayah Indonesia menggunakan data ephemeris NASA JPL DE421.</p>
+                    
+                    <div style="margin-bottom: 20px; text-align: left;">
+                        <label for="targetBulan" style="font-size: 0.9rem; font-weight: bold; color: #4B0082;">Pilih Target Observasi:</label>
+                        <select id="targetBulan" style="width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; background-color: #f8f9fa;">
+                            <option value="auto">🔭 Otomatis (Ijtima' Terdekat)</option>
+                            <option value="ramadhan_1447">🌙 Ramadhan 1447 H (Februari/Maret 2026)</option>
+                            <option value="syawal_1447">🕌 Syawal 1447 H (Maret 2026)</option>
+                            <option value="zulhijjah_1447">🕋 Zulhijjah 1447 H (Mei 2026)</option>
+                        </select>
+                    </div>
+
+                    <button id="btnPredict" onclick="jalankanPrediksi()">MULAI PREDIKSI SEKARANG</button>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="info-card" style="height: auto; box-sizing: border-box;">
+                    <h4>Kriteria MABIMS Baru</h4>
+                    <p>Aplikasi ini mengacu pada standar kesepakatan Menteri Agama Brunei, Indonesia, Malaysia, dan Singapura:</p>
+                    <ul>
+                        <li style="margin-bottom: 10px;">Tinggi Hilal minimal <br><b style="font-size: 1.2rem; color: #6D28D9;">3 Derajat</b></li>
+                        <li>Sudut Elongasi minimal <br><b style="font-size: 1.2rem; color: #6D28D9;">6.4 Derajat</b></li>
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+
+        <div id="loadingSection" style="display: none;">
+            <p id="loadingText">Mengkalkulasi 12.765 Titik Koordinat...</p>
+            <div class="progress-container">
+                <div class="progress-bar-animated"></div>
+            </div>
+            <p style="text-align: center; color: #888; font-size: 13px;">Proses ini membutuhkan waktu beberapa saat. Harap tunggu.</p>
+        </div>
+
+        <div id="resultContainer" style="display: none;">
+            <h2 id="eventTitle">Nama Event</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span>Tinggi Hilal Max</span>
+                    <strong id="valAlt">0°</strong>
+                </div>
+                <div class="metric-card">
+                    <span>Elongasi Max</span>
+                    <strong id="valElong">0°</strong>
+                </div>
+                <div class="metric-card">
+                    <span>Ijtima' (WIB)</span>
+                    <strong id="valIjtima">-</strong>
+                </div>
+                <div class="metric-card">
+                    <span>Tgl Observasi</span>
+                    <strong id="valDate">-</strong>
+                </div>
+                
+                <div class="metric-card" style="border-left-color: #2E7D32;">
+                    <span>Umur Hilal</span>
+                    <strong id="valUmur">- Jam</strong>
+                </div>
+                <div class="metric-card" style="border-left-color: #2E7D32;">
+                    <span>Fraksi Iluminasi</span>
+                    <strong id="valIluminasi">- %</strong>
+                </div>
+                <div class="metric-card" style="border-left-color: #E65100;">
+                    <span>Lag Time (Mukuts)</span>
+                    <strong id="valLag">- Menit</strong>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eaeaea;">
+                <h4 style="margin-top: 0; color: #4B0082; font-size: 1.1rem; margin-bottom: 15px;">Cek Titik Observasi Spesifik</h4>
+                <div class="search-wrapper">
+                    <input type="text" id="inputLokasi" placeholder="Contoh: Bosscha, Pelabuhan Ratu, Masjid Istiqlal...">
+                    <button onclick="cariLokasiSpesifik()" style="width: auto; padding: 0 0%; margin: 0;">Cari & Analisis</button>
+                </div>
+                <p id="pesanLokasi" style="color: #E65100; font-size: 0.85rem; margin-top: 10px; margin-bottom: 0; display: none;">Mencari koordinat dan menghitung data NASA...</p>
+            </div>
+            
+            <div id="map"></div>
+
+            <div class="map-legend">
+                <h4>Keterangan Titik Peta</h4>
+                <div class="legend-item">
+                    <span class="legend-color" style="background-color: #6D28D9;"></span>
+                    <span class="legend-text"><b>Titik Ungu:</b> Memenuhi Kriteria MABIMS (Hilal berpotensi terlihat)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background-color: #b2bec3;"></span>
+                    <span class="legend-text"><b>Titik Abu-abu:</b> Belum Memenuhi Kriteria (Tinggi/Elongasi di bawah standar)</span>
+                </div>
+                <p class="legend-note">
+                    <i><b>Catatan Hukum Hisab:</b> Secara konsep wilayah hukum (Wilayatul Hukmi), jika terdapat minimal <b>satu titik ungu</b> saja di seluruh wilayah Indonesia, maka secara teknis hilal dianggap sudah wujud dan memenuhi syarat awal bulan untuk seluruh negeri.</i>
+                </p>
+            </div>
+
+            <div id="conclusionBox" class="conclusion-box">
+                <h3 id="statusMabims">Kesimpulan Sementara:</h3>
+                <p id="pesanEdukasi">Data menunjukkan bahwa titik-titik dengan tinggi hilal ≥ 3° dan elongasi ≥ 6.4° memiliki peluang lebih besar untuk melihat hilal. Namun, faktor lain seperti kondisi atmosfer juga mempengaruhi hasil akhir.</p>
+            </div>
+
+            <button id="btnDownload" onclick="unduhLaporanPDF()" style="background-color: #2E7D32; margin-top: 20px;">📄 UNDUH LAPORAN OBSERVASI (PDF)</button>
+            <button class="btn-secondary" id="btnBack" onclick="resetTampilan()">🔄 KEMBALI KE HALAMAN AWAL</button>
+        </div>
+    </main>
+
+    <script>
+        let map;
+        let specialMarker = null;
+
+        // LOAD KALENDER HIJRIAH SECARA LIVE & JAM DIGITAL
+        window.onload = function() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date();
+            document.getElementById('tglMasehi').innerText = today.toLocaleDateString('id-ID', options);
+
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let yyyy = today.getFullYear();
+            let dateStr = dd + '-' + mm + '-' + yyyy;
+
+            fetch('https://api.aladhan.com/v1/gToH?date=' + dateStr + '&adjustment=-1')
+                .then(response => response.json())
+                .then(data => {
+                    let hijri = data.data.hijri;
+                    document.getElementById('tglHijriah').innerText = `${hijri.day} ${hijri.month.en} ${hijri.year} H`;
+                })
+                .catch(err => {
+                    document.getElementById('tglHijriah').innerText = "Gagal memuat kalender";
+                });
+
+            setInterval(updateClock, 1000);
+            updateClock(); 
+        };
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            let tzOffset = now.getTimezoneOffset();
+            let zonaWaktu = "WIB"; 
+
+            if (tzOffset === -420) {
+                zonaWaktu = "WIB";
+            } else if (tzOffset === -480) {
+                zonaWaktu = "WITA";
+            } else if (tzOffset === -540) {
+                zonaWaktu = "WIT";
+            } else {
+                try {
+                    let tzName = Intl.DateTimeFormat('id-ID', { timeZoneName: 'short' }).formatToParts(now).find(i => i.type === 'timeZoneName').value;
+                    zonaWaktu = tzName;
+                } catch(e) {
+                    zonaWaktu = "Lokal";
+                }
+            }
+
+            document.getElementById('liveClock').innerText = `${hours}:${minutes}:${seconds} ${zonaWaktu}`;
+        }
+
+        function jalankanPrediksi() {
+            document.getElementById('landingDashboard').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+
+            let targetBulan = document.getElementById('targetBulan').value;
+
+            fetch('/api/predict?target=' + targetBulan)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.json();
+                })
+                .then(res => {
+                    const data = res.data;
+                    
+                    document.getElementById('eventTitle').innerText = data.event_title;
+                    
+                    if (targetBulan === 'auto') {
+                        let obsDate = new Date(data.tgl_obs_raw);
+                        obsDate.setDate(obsDate.getDate() + 1); 
+                        
+                        let dStr = String(obsDate.getDate()).padStart(2, '0') + '-' + 
+                                   String(obsDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                                   obsDate.getFullYear();
+                                   
+                        fetch('https://api.aladhan.com/v1/gToH?date=' + dStr)
+                            .then(r => r.json())
+                            .then(hijriData => {
+                                let namaBulanAPI = hijriData.data.hijri.month.en; 
+                                let tahunHijriah = hijriData.data.hijri.year;
+
+                                const translateBulan = {
+                                    "Muharram": "Muharram", "Safar": "Safar", "Rabi' al-awwal": "Rabiul Awal",
+                                    "Rabi' al-thani": "Rabiul Akhir", "Jumada al-awwal": "Jumadil Awal",
+                                    "Jumada al-thani": "Jumadil Akhir", "Rajab": "Rajab", "Sha'ban": "Sya'ban",
+                                    "Ramadan": "Ramadhan", "Shawwal": "Syawal", "Dhu al-Qi'dah": "Dzulqa'dah",
+                                    "Dhu al-Hijjah": "Dzulhijjah"
+                                };
+
+                                let namaBulanIndo = translateBulan[namaBulanAPI] || namaBulanAPI;
+                                document.getElementById('eventTitle').innerText = `🔭 Analisis Hilal Awal Bulan ${namaBulanIndo} ${tahunHijriah} H`;
+                            })
+                            .catch(e => console.log("Gagal memuat nama bulan API"));
+                    }
+
+                    document.getElementById('valAlt').innerText = data.max_alt.toFixed(2) + '°';
+                    document.getElementById('valElong').innerText = data.max_elong.toFixed(2) + '°';
+                    document.getElementById('valIjtima').innerText = data.waktu_ijtima.split('|')[1];
+                    document.getElementById('valDate').innerText = data.tgl_obs_raw;
+
+                    document.getElementById('valUmur').innerText = data.umur_hilal ? data.umur_hilal + ' Jam' : '- Jam';
+                    document.getElementById('valIluminasi').innerText = data.iluminasi ? data.iluminasi + ' %' : '- %';
+                    document.getElementById('valLag').innerText = data.lag_time ? data.lag_time + ' Menit' : '- Menit';
+
+                    let isLolos = (data.max_alt >= 3.0 && data.max_elong >= 6.4);
+                    let statusText = isLolos ? "✅ MEMENUHI KRITERIA MABIMS" : "BELUM MEMENUHI MABIMS (ISTIKMAL)";
+                    
+                    document.getElementById('statusMabims').innerText = 'Kesimpulan: ' + statusText;
+                    document.getElementById('pesanEdukasi').innerHTML = `<b>Saran:</b> Sangat disarankan untuk mengecek kembali pada tanggal <b>${data.tgl_obs_raw}</b> guna mendapatkan akurasi final. Wilayah dengan titik ungu pada peta menunjukkan area yang diprediksi telah memenuhi kriteria visibilitas. Tetap tunggu keputusan Sidang Isbat resmi dari Pemerintah.`;
+
+                    document.getElementById('loadingSection').style.display = 'none';
+                    document.getElementById('resultContainer').style.display = 'block';
+
+                    renderPeta(data.points);
+                })
+                .catch(err => {
+                    alert('Terjadi kesalahan komputasi! Cek console.');
+                    console.error(err);
+                    resetTampilan();
+                });
+        }
+
+        function renderPeta(points) {
+            if(!map) {
+                map = L.map('map').setView([-2.5, 118], 5);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+            }
+            
+            map.eachLayer((layer) => { if(!!layer.toGeoJSON) map.removeLayer(layer); });
+
+            points.forEach((p, index) => {
+                if (index % 20 === 0 && p.tinggi > 0) {
+                    let isPass = (p.tinggi >= 3.0 && p.elongasi >= 6.4);
+                    let color = isPass ? '#6D28D9' : '#b2bec3';
+                    
+                    L.circleMarker([p.lat, p.lon], {
+                        radius: isPass ? 5 : 2,
+                        color: color,
+                        fillOpacity: 0.8
+                    }).addTo(map);
+                }
+            });
+        }
+
+        function resetTampilan() {
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('landingDashboard').style.display = 'grid';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cariLokasiSpesifik() {
+            let query = document.getElementById('inputLokasi').value;
+            if (!query) return alert("Masukkan nama lokasi dulu!");
+
+            let pesanText = document.getElementById('pesanLokasi');
+            pesanText.style.display = 'block';
+            pesanText.innerText = "Mencari koordinat di GPS...";
+
+            // Menggunakan encodeURIComponent agar aman jika ada spasi/simbol
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id`)
+                .then(res => res.json())
+                .then(geoData => {
+                    if (geoData.length === 0) {
+                        pesanText.innerText = "Lokasi tidak ditemukan di Indonesia. Coba kata kunci lain.";
+                        return;
+                    }
+
+                    let lat = parseFloat(geoData[0].lat);
+                    let lon = parseFloat(geoData[0].lon);
+                    let namaLokasi = geoData[0].display_name.split(",")[0];
+
+                    pesanText.innerText = `Menghitung Ephemeris NASA untuk ${namaLokasi}...`;
+                    let targetBulan = document.getElementById('targetBulan').value;
+
+                    return fetch(`/api/location?lat=${lat}&lon=${lon}&target=${targetBulan}`)
+                        .then(res => res.json())
+                        .then(astroData => {
+                            pesanText.style.display = 'none';
+
+                            if (astroData.error) {
+                                alert("Data Error: " + astroData.error);
+                                return;
+                            }
+
+                            map.setView([lat, lon], 10); 
+
+                            if (specialMarker) map.removeLayer(specialMarker); 
+
+                            let statusWarna = astroData.is_pass ? "green" : "red";
+                            let statusTeks = astroData.is_pass ? "✅ LOLOS MABIMS" : "❌ TIDAK LOLOS";
+
+                            specialMarker = L.circleMarker([lat, lon], {
+                                radius: 8,
+                                color: 'white',
+                                fillColor: '#E65100', 
+                                fillOpacity: 1,
+                                weight: 2
+                            }).addTo(map);
+
+                            let popupContent = `
+                                <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 180px;">
+                                    <h4 style="margin:0 0 5px 0; color:#4B0082;">📍 ${namaLokasi}</h4>
+                                    <p style="margin:0 0 10px 0; font-size:11px; color:#666;">Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}</p>
+                                    
+                                    <table style="width:100%; font-size:13px; margin-bottom:10px; border-collapse: collapse;">
+                                        <tr><td style="padding: 2px 0;">Tinggi Hilal</td><td>: <b>${astroData.tinggi}°</b></td></tr>
+                                        <tr><td style="padding: 2px 0;">Elongasi</td><td>: <b>${astroData.elongasi}°</b></td></tr>
+                                        <tr><td style="padding: 2px 0;">Umur Hilal</td><td>: <b>${astroData.umur} Jam</b></td></tr>
+                                        <tr><td style="padding: 2px 0;">Iluminasi</td><td>: <b>${astroData.iluminasi}%</b></td></tr>
+                                        <tr><td style="padding: 2px 0;">Mukuts</td><td>: <b>${astroData.lag_time} Menit</b></td></tr>
+                                        <tr style="border-top: 1px dashed #ccc;">
+                                            <td style="padding: 5px 0 2px 0; color: #E65100; font-weight: bold;">☁️ Cuaca</td>
+                                            <td style="padding: 5px 0 2px 0; color: #E65100;">: <b>${astroData.cloud_cover}% (${astroData.cuaca_status})</b></td>
+                                        </tr>
+                                    </table>
+
+                                    <div style="background:${statusWarna}; color:white; padding:6px; text-align:center; border-radius:4px; font-weight:bold; font-size:12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        ${statusTeks}
+                                    </div>
+                                    
+                                    ${astroData.cloud_cover >= 75 ? `<p style="margin: 8px 0 0 0; font-size: 10px; color: #d32f2f; text-align: center;">⚠️ <i>Visibilitas terhambat mendung tebal</i></p>` : ''}
+                                </div>
+                            `;
+                            
+                            specialMarker.bindPopup(popupContent).openPopup();
+                        });
+                })
+                .catch(err => {
+                    pesanText.innerText = "Terjadi kesalahan jaringan.";
+                    console.error(err);
+                });
+        }
+
+        // FUNGSI CETAK LAPORAN PDF (BARU)
+        function unduhLaporanPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+
+            // Fungsi pembersih teks dari emoji atau karakter aneh agar tidak berantakan
+            const cleanText = (text) => {
+                return text.replace(/[^\x00-\x7F]/g, "").trim(); 
+            };
+
+            // 1. SETTING FONT & KOP SURAT
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(18);
+            doc.setTextColor(75, 0, 130);
+            // Kita ketik manual judulnya agar tidak mengambil emoji dari HTML
+            doc.text("HILAL-CHECKER", 105, 20, { align: "center" });
+            
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(100);
+            doc.text("Predictive Astronomy Engine | Dibalik Data", 105, 26, { align: "center" });
+            
+            doc.setLineWidth(0.5);
+            doc.line(20, 32, 190, 32);
+
+            // 2. JUDUL ANALISIS (Dibersihkan dari emoji 🔭)
+            const rawTitle = document.getElementById('eventTitle').innerText;
+            const safeTitle = cleanText(rawTitle);
+            
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(0);
+            doc.text(safeTitle, 20, 45);
+
+            // 3. TABEL DATA
+            doc.setFontSize(11);
+            doc.text("Ringkasan Data Ephemeris:", 20, 55);
+            
+            doc.setFillColor(248, 249, 250);
+            doc.rect(20, 58, 170, 45, 'F');
+            
+            doc.setFont("helvetica", "normal");
+            const metrics = [
+                ["Tinggi Hilal Max", document.getElementById('valAlt').innerText],
+                ["Elongasi Max", document.getElementById('valElong').innerText],
+                ["Waktu Ijtima'", document.getElementById('valIjtima').innerText],
+                ["Tanggal Observasi", document.getElementById('valDate').innerText],
+                ["Umur Hilal", document.getElementById('valUmur').innerText],
+                ["Fraksi Iluminasi", document.getElementById('valIluminasi').innerText],
+                ["Lag Time (Mukuts)", document.getElementById('valLag').innerText]
+            ];
+
+            let yPos = 65;
+            metrics.forEach(item => {
+                doc.text(item[0], 25, yPos);
+                doc.setFont("helvetica", "bold");
+                // Kita bersihkan juga nilai metriknya jika ada simbol derajat yang bermasalah
+                doc.text(": " + item[1].replace('°', ' deg'), 70, yPos);
+                doc.setFont("helvetica", "normal");
+                yPos += 5.5;
+            });
+
+            // 4. KESIMPULAN MABIMS (Dibersihkan dari emoji ✅/⏳)
+            const rawStatus = document.getElementById('statusMabims').innerText;
+            const safeStatus = cleanText(rawStatus);
+            
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            if(rawStatus.includes("✅")) {
+                doc.setTextColor(46, 125, 50);
+            } else {
+                doc.setTextColor(230, 81, 0);
+            }
+            doc.text(safeStatus, 20, 115);
+
+            // 5. FOOTER
+            doc.setFontSize(9);
+            doc.setTextColor(150);
+            const now = new Date().toLocaleString('id-ID');
+            doc.text("Dokumen ini dihasilkan secara otomatis oleh HILAL-CHECKER (Dibalik Data)", 105, 280, { align: "center" });
+            doc.text("Waktu Cetak: " + now, 105, 285, { align: "center" });
+
+            doc.save(`Laporan_Hilal.pdf`);
+        }
+    </script>
+</body>
+</html>
