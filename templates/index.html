@@ -96,7 +96,7 @@
     <main class="flex-1 flex flex-col min-w-0">
         <header class="h-20 border-b border-border-dark flex items-center justify-between px-8 bg-background-dark/50 backdrop-blur-md sticky top-0 z-50">
             <div class="flex items-center gap-6">
-                <button onclick="resetTampilan()" title="Kembali ke Beranda" class="flex items-center justify-center bg-primary/20 hover:bg-primary/40 text-primary size-10 rounded-xl transition-all border border-primary/30">
+                <button id="btnBackHeader" onclick="resetTampilan()" title="Kembali ke Beranda" class="hidden items-center justify-center bg-primary/20 hover:bg-primary/40 text-primary size-10 rounded-xl transition-all border border-primary/30">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </button>
 
@@ -129,7 +129,7 @@
                         <p class="text-sm font-bold text-slate-100">Riyandi</p>
                         <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-bold">Analyst</p>
                     </div>
-                    <div class="size-10 rounded-full bg-primary/20 border border-primary/40 overflow-hidden">
+                    <div class="size-10 rounded-full bg-primary/20 border border-primary/40 overflow-hidden shadow-lg shadow-primary/20">
                         <img src="https://ui-avatars.com/api/?name=Riyandi&background=3211d4&color=fff" class="w-full h-full object-cover">
                     </div>
                 </div>
@@ -139,37 +139,66 @@
         <div id="landingDashboard" class="p-8 space-y-8 max-w-[1400px] mx-auto w-full transition-opacity duration-500">
             <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <div class="xl:col-span-2 glass-card rounded-2xl p-8 flex flex-col justify-center border border-border-dark">
-                    <h2 class="text-3xl font-extrabold text-white mb-2">Simulasi Visibilitas Hilal</h2>
-                    <p class="text-slate-400 max-w-xl mb-8">Gunakan algoritma NASA JPL DE421 untuk memprediksi keterlihatan bulan baru di 12.765 titik koordinat Indonesia berdasarkan kriteria MABIMS.</p>
+                    <h2 class="text-3xl font-extrabold text-white mb-2">HILAL CHECKER</h2>
+                    <p class="text-primary font-bold text-xs uppercase tracking-[0.2em] mb-4">Predictive Astronomy Engine | Dibalik Data</p>
                     
-                    <div class="flex flex-col sm:flex-row gap-4 items-end">
-                        <div class="flex-1 w-full">
-                            <label class="text-xs font-bold text-primary uppercase mb-2 block font-bold">Pilih Target Observasi</label>
-                            <select id="targetBulan" class="w-full bg-slate-800/50 border-border-dark rounded-xl py-3 px-4 text-white focus:ring-primary">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <p class="text-white font-bold text-xs mb-1">ENGINE & ALGORITMA</p>
+                            <p class="text-slate-400 text-[11px] leading-relaxed">Sistem ini ditenagai oleh <b>Skyfield Engine</b> menggunakan algoritma <b>NASA JPL DE421</b> untuk menghitung posisi presisi Bulan dan Matahari.</p>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                            <p class="text-white font-bold text-xs mb-1">SUMBER DATA EPHEMERIS</p>
+                            <p class="text-slate-400 text-[11px] leading-relaxed">Data primer bersumber dari <b>United States Naval Observatory (USNO)</b> dengan integrasi koordinat <b>OpenStreetMap</b>.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/5 mb-6 text-left">
+                        <p class="text-white font-bold text-xs mb-2 uppercase tracking-wider">Wilayah Analisis</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="text-slate-300 font-bold">🇮🇩 Indonesia</span>
+                                <span class="size-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                            </div>
+                            <div class="flex items-center justify-between text-[11px] opacity-40">
+                                <span class="text-slate-500">Global Access</span>
+                                <span class="text-[8px] bg-slate-800 px-1 py-0.5 rounded font-bold text-slate-400 uppercase">Soon</span>
+                            </div>
+                            <p class="text-slate-500 text-[10px] leading-relaxed mt-2 italic">Saat ini sistem dioptimasi khusus untuk 12.765 titik koordinat di seluruh wilayah hukum Indonesia.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 items-end pt-4 border-t border-white/5">
+                        <div class="flex-1 w-full text-left">
+                            <label class="text-[10px] font-bold text-primary uppercase mb-2 block tracking-widest">Pilih Target Observasi</label>
+                            <select id="targetBulan" class="w-full bg-slate-800/50 border-border-dark rounded-xl py-3.5 px-4 text-white font-bold focus:ring-primary">
                                 <option value="auto">🔭 Otomatis (Ijtima' Terdekat)</option>
                                 <option value="ramadhan_1447">🌙 Ramadhan 1447 H (2026)</option>
                                 <option value="syawal_1447">🕌 Syawal 1447 H (2026)</option>
                                 <option value="zulhijjah_1447">🕋 Zulhijjah 1447 H (2026)</option>
                             </select>
                         </div>
-                        <button onclick="jalankanPrediksi()" class="bg-primary hover:bg-primary/80 text-white px-8 py-3.5 rounded-xl font-bold flex items-center gap-3 transition-all">
-                            <span class="material-symbols-outlined">rocket_launch</span> MULAI ANALISIS
+                        <button onclick="jalankanPrediksi()" class="bg-primary hover:bg-primary/80 text-white px-8 py-4 rounded-xl font-black tracking-widest flex items-center gap-3 transition-all shadow-lg shadow-primary/20">
+                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">rocket_launch</span> 
+                            MULAI ANALISIS
                         </button>
                     </div>
                 </div>
 
-                <div class="glass-card rounded-2xl p-6 border border-border-dark">
+                <div class="glass-card rounded-2xl p-6 border border-border-dark flex flex-col justify-center">
                     <h3 class="font-bold text-slate-100 flex items-center gap-2 mb-4">
-                        <span class="material-symbols-outlined text-primary">verified</span> Kriteria MABIMS
+                        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1">verified</span> 
+                        Kriteria MABIMS
                     </h3>
+                    <p class="text-slate-400 text-[11px] mb-6 leading-relaxed">Kesepakatan visibilitas hilal Menteri Agama Brunei, Indonesia, Malaysia, dan Singapura:</p>
                     <ul class="space-y-4">
                         <li class="bg-slate-800/30 p-4 rounded-xl border border-border-dark">
                             <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Tinggi Minimal</p>
-                            <p class="text-white font-bold text-xl">3 Derajat</p>
+                            <p class="text-white font-black text-xl italic">3 Derajat</p>
                         </li>
                         <li class="bg-slate-800/30 p-4 rounded-xl border border-border-dark">
                             <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Elongasi Minimal</p>
-                            <p class="text-white font-bold text-xl">6.4 Derajat</p>
+                            <p class="text-white font-black text-xl italic">6.4 Derajat</p>
                         </li>
                     </ul>
                 </div>
@@ -237,7 +266,7 @@
 
         <footer class="mt-auto border-t border-border-dark py-6 px-8 flex justify-center items-center">
             <p class="text-slate-500 text-xs font-medium uppercase tracking-widest font-bold">
-                © 2026 <span class="text-primary font-black">Riyandi Muhamad Rizki</span> | Dibalik Data Professional Report.
+                © 2026 <span class="text-primary font-black">Riyandi Muhamad Rizki</span> | Hak Cipta Dilindungi.
             </p>
         </footer>
     </main>
@@ -285,17 +314,23 @@
         }
 
         function jalankanPrediksi() {
+            // 1. Tampilan awal loading
             document.getElementById('landingDashboard').classList.add('hidden');
             document.getElementById('loadingSection').classList.remove('hidden');
             document.getElementById('resultContainer').classList.add('hidden');
 
             let target = document.getElementById('targetBulan').value;
             
+            // 2. Ambil data dari API
             fetch('/api/predict?target=' + target)
-                .then(r => r.json())
+                .then(r => {
+                    if (!r.ok) throw new Error("Gagal mendapatkan data prediksi");
+                    return r.json();
+                })
                 .then(res => {
                     const data = res.data;
                     
+                    // 3. Update metrik data di UI
                     document.getElementById('valAlt').innerText = data.max_alt.toFixed(2) + '°';
                     document.getElementById('valElong').innerText = data.max_elong.toFixed(2) + '°';
                     document.getElementById('valIjtima').innerText = data.waktu_ijtima.split('|')[1];
@@ -304,7 +339,7 @@
                     document.getElementById('valIluminasi').innerText = data.iluminasi + ' %';
                     document.getElementById('valLag').innerText = data.lag_time + ' M';
 
-                    // Update Timestamp Running
+                    // 4. Update Timestamp Real-time (Waktu Klik)
                     const now = new Date();
                     const timeStr = now.toLocaleString('id-ID', { 
                         day: '2-digit', month: 'long', year: 'numeric', 
@@ -312,15 +347,41 @@
                     });
                     document.getElementById('runTimestamp').innerText = `Waktu Analisis: ${timeStr} WIB`;
 
-                    // Update Kesimpulan
+                    // 5. Update Kesimpulan MABIMS
                     let isLolos = (data.max_alt >= 3.0 && data.max_elong >= 6.4);
                     document.getElementById('statusMabims').innerText = 'KESIMPULAN: ' + (isLolos ? "✅ LOLOS MABIMS" : "❌ BELUM LOLOS");
-                    document.getElementById('pesanEdukasi').innerText = `Analisis NASA menunjukkan pada ${data.tgl_obs_raw} hilal ${isLolos ? "sudah" : "belum"} memenuhi syarat visibilitas MABIMS di wilayah Indonesia.`;
+                    document.getElementById('pesanEdukasi').innerText = `Analisis NASA menunjukkan pada ${data.tgl_obs_raw} hilal ${isLolos ? "sudah" : "belum"} memenuhi standar visibilitas MABIMS di wilayah Indonesia.`;
 
+                    // 6. Tampilkan Hasil & Tombol Kembali di Header
                     document.getElementById('loadingSection').classList.add('hidden');
                     document.getElementById('resultContainer').classList.remove('hidden');
+                    
+                    // Logika memunculkan tombol kembali di header (Ganti hidden jadi flex)
+                    const btnBack = document.getElementById('btnBackHeader');
+                    if(btnBack) {
+                        btnBack.classList.remove('hidden');
+                        btnBack.classList.add('flex');
+                    }
+                    
                     renderPeta(data.points);
+                })
+                .catch(err => {
+                    alert("Error: " + err.message);
+                    resetTampilan();
                 });
+        }
+
+        function resetTampilan() {
+            document.getElementById('resultContainer').classList.add('hidden');
+            document.getElementById('loadingSection').classList.add('hidden');
+            document.getElementById('landingDashboard').classList.remove('hidden');
+            
+            // Logika menyembunyikan tombol kembali di header
+            const btnBack = document.getElementById('btnBackHeader');
+            if(btnBack) {
+                btnBack.classList.remove('flex');
+                btnBack.classList.add('hidden');
+            }
         }
 
         function renderPeta(points) {
@@ -402,9 +463,11 @@
             const doc = new jsPDF('p', 'mm', 'a4');
             const clean = (t) => t.replace(/[^\x00-\x7F]/g, "").trim();
 
+            // 1. Header Background
             doc.setFillColor(50, 17, 212);
             doc.rect(0, 0, 210, 40, 'F');
             
+            // 2. Header Text
             doc.setFont("helvetica", "bold");
             doc.setFontSize(24);
             doc.setTextColor(255, 255, 255);
@@ -414,8 +477,9 @@
             doc.setFont("helvetica", "normal");
             doc.text("Professional Observation Report | Powered by Dibalik Data", 20, 30);
             doc.text("Analyst: Riyandi Muhamad Rizki", 140, 22);
-            doc.text("Sistem: NASA JPL DE421 Ephemeris", 140, 28);
+            doc.text("Sistem: NASA JPL DE421 Ephemeris", 140, 28); // Disesuaikan agar lebih general
 
+            // 3. Judul Laporan Dinamis
             doc.setFontSize(16);
             doc.setFont("helvetica", "bold");
             doc.setTextColor(50, 17, 212);
@@ -425,6 +489,7 @@
             doc.setDrawColor(200);
             doc.line(20, 60, 190, 60);
 
+            // 4. Tabel Data Astronomi
             doc.setFontSize(11);
             doc.setTextColor(0);
             doc.text("DATA ASTRONOMI & EPHEMERIS:", 20, 70);
@@ -440,17 +505,18 @@
             ];
 
             let y = 80;
-            doc.setFont("helvetica", "normal");
             dataTable.forEach(row => {
+                doc.setFont("helvetica", "normal");
                 doc.setFillColor(245, 245, 250);
                 doc.rect(20, y - 5, 170, 7, 'F');
                 doc.text(row[0], 25, y);
                 doc.setFont("helvetica", "bold");
                 doc.text(": " + row[1], 80, y);
-                doc.setFont("helvetica", "normal");
                 y += 8;
             });
 
+            // 5. Logika Status & Pesan Edukasi (Dinamis)
+            const tglObs = document.getElementById('valDate').innerText;
             const rawStatus = document.getElementById('statusMabims').innerText;
             const isLolos = rawStatus.includes("✅");
             
@@ -464,19 +530,28 @@
                 doc.text("STATUS: BELUM MEMENUHI KRITERIA (ISTIKMAL)", 20, 150);
             }
 
+            // Bagian yang Bos minta: Menghapus "Analisis NASA" dan mengikuti tanggal sistem
             doc.setFontSize(10);
             doc.setTextColor(100);
             doc.setFont("helvetica", "italic");
-            const edukasi = clean(document.getElementById('pesanEdukasi').innerText);
-            const splitEdukasi = doc.splitTextToSize(edukasi, 170);
+            
+            const narasiDinamis = `Berdasarkan parameter astronomi pada ${tglObs}, hasil perhitungan sistem menunjukkan bahwa hilal ${isLolos ? "sudah" : "belum"} memenuhi standar visibilitas MABIMS di wilayah hukum Indonesia.`;
+            
+            const splitEdukasi = doc.splitTextToSize(narasiDinamis, 170);
             doc.text(splitEdukasi, 20, 160);
 
+            // 6. Footer
             doc.setFontSize(8);
             doc.setTextColor(150);
-            const now = new Date().toLocaleString('id-ID');
-            doc.text("© 2026 Riyandi Muhamad Rizki | Dibalik Data Professional Report", 105, 280, { align: "center" });
-            doc.text("Dicetak pada: " + now, 105, 285, { align: "center" });
+            doc.setFont("helvetica", "normal");
+            const printedAt = new Date().toLocaleString('id-ID', { 
+                day: '2-digit', month: '2-digit', year: 'numeric', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit' 
+            });
+            doc.text("© 2026 Riyandi Muhamad Rizki | Hak Cipta Dilindungi", 105, 280, { align: "center" });
+            doc.text("Dicetak pada: " + printedAt + " WIB", 105, 285, { align: "center" });
 
+            // 7. Save File
             doc.save(`Laporan_Hilal_${new Date().getTime()}.pdf`);
         }
     </script>
