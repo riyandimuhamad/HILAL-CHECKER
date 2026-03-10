@@ -34,35 +34,60 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s, color 0.3s; }
         
-        /* FIX: Pastikan teks berubah warna saat Dark Mode */
+        /* DARK MODE (DEFAULT) */
         html.dark body { background-color: #131022; color: #f1f5f9; }
         html.dark .glass-card { background: rgba(255, 255, 255, 0.03); border-color: rgba(50, 17, 212, 0.2); }
-        html.dark .text-slate-400 { color: #94a3b8; }
         
-        .glass-sidebar { background: rgba(19, 16, 34, 0.8); backdrop-filter: blur(12px); border-right: 1px solid rgba(50, 17, 212, 0.2); }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(8px); border: 1px solid rgba(50, 17, 212, 0.15); }
+        /* LIGHT MODE (FORCE UPDATES) */
+        html:not(.dark) body { background-color: #f1f5f9; color: #0f172a; }
+        
+        /* Pastikan Card & Border tetap terlihat di Mode Terang */
+        html:not(.dark) .glass-card { 
+            background: rgba(255, 255, 255, 0.9) !important; 
+            border: 1px solid rgba(50, 17, 212, 0.2) !important; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* Fix untuk kotak Engine, Algoritma, dan sejenisnya */
+        html:not(.dark) .bg-white\/5 { 
+            background-color: rgba(50, 17, 212, 0.05) !important; 
+            border-color: rgba(50, 17, 212, 0.15) !important; 
+        }
+
+        /* Fix Warna Teks Dashboard & Judul Card agar tidak hilang */
+        html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, 
+        html:not(.dark) .text-white, html:not(.dark) .text-slate-100 { 
+            color: #1e293b !important; 
+        }
+
+        /* Fix Sidebar Text agar Dashboard dkk tetap terbaca */
+        html:not(.dark) aside .text-slate-100, html:not(.dark) aside .text-slate-400 {
+            color: #475569 !important;
+        }
+
+        /* Fix Tombol MULAI ANALISIS (Jika teksnya putih di mode terang) */
+        html:not(.dark) button.bg-primary {
+            color: #ffffff !important; /* Tetap putih karena background tombol biru gelap */
+            box-shadow: 0 4px 14px rgba(50, 17, 212, 0.3);
+        }
+
+        /* Tetap jaga teks abu-abu agar kontras */
+        html:not(.dark) .text-slate-400 { color: #64748b !important; }
+
         #map { height: 450px; width: 100%; border-radius: 12px; z-index: 10; }
 
-        /* FIX: Loading Bar Horizontal di Tengah */
         .progress-container {
-            width: 100%;
-            max-width: 400px;
-            height: 8px;
-            background: rgba(50, 17, 212, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px auto;
+            width: 100%; max-width: 400px; height: 8px;
+            background: rgba(50, 17, 212, 0.1); border-radius: 10px;
+            overflow: hidden; margin: 20px auto;
         }
         .progress-bar-fill {
-            width: 0%;
-            height: 100%;
+            width: 0%; height: 100%;
             background: linear-gradient(90deg, #3211d4, #6366f1);
             animation: loading-anim 2s infinite ease-in-out;
         }
         @keyframes loading-anim {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
+            0% { width: 0%; } 50% { width: 70%; } 100% { width: 100%; }
         }
     </style>
 </head>
@@ -108,14 +133,14 @@
                         <span id="liveClock" class="text-sm tracking-wide">00:00:00 WIB</span>
                     </div>
                     <div class="text-slate-400 text-xs font-medium">
-                        <span id="tglMasehi">...</span> • <span id="tglHijriah">...</span>
+                        <span id="tglMasehi">...</span> | <span id="tglHijriah">...</span>
                     </div>
                 </div>
             </div>
             
             <div class="flex items-center gap-6">
                 <div class="flex items-center gap-2">
-                    <button class="size-10 flex items-center justify-center rounded-full bg-slate-800/50 text-slate-300 hover:text-primary transition-colors relative">
+                    <button onclick="showNotifications()" class="size-10 flex items-center justify-center rounded-full bg-slate-800/50 text-slate-300 hover:text-primary transition-colors relative">
                         <span class="material-symbols-outlined">notifications</span>
                         <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-background-dark"></span>
                     </button>
@@ -124,9 +149,10 @@
                     </button>
                 </div>
                 <div class="h-8 w-px bg-border-dark"></div>
-                <div class="flex items-center gap-3">
+                
+                <div onclick="showProfileInfo()" class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-all">
                     <div class="text-right hidden sm:block">
-                        <p class="text-sm font-bold text-slate-100">Riyandi</p>
+                        <p class="text-sm font-bold text-slate-100 dark:text-slate-100">Riyandi</p>
                         <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-bold">Analyst</p>
                     </div>
                     <div class="size-10 rounded-full bg-primary/20 border border-primary/40 overflow-hidden shadow-lg shadow-primary/20">
@@ -153,18 +179,35 @@
                         </div>
                     </div>
 
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/5 mb-6 text-left">
-                        <p class="text-white font-bold text-xs mb-2 uppercase tracking-wider">Wilayah Analisis</p>
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between text-[11px]">
-                                <span class="text-slate-300 font-bold">🇮🇩 Indonesia</span>
-                                <span class="size-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <div class="bg-white/5 p-5 rounded-xl border border-white/5 mb-6 text-left">
+                        <div class="flex items-center justify-between mb-4">
+                            <p class="text-white font-bold text-xs uppercase tracking-wider">Cakupan Wilayah Analisis</p>
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded-full font-bold animate-pulse">SISTEM AKTIF</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-primary/10 border border-primary/20 p-3 rounded-lg">
+                                <div class="flex items-center justify-between text-[11px] mb-1">
+                                    <span class="text-white font-bold">🇮🇩 Indonesia</span>
+                                    <span class="size-1.5 bg-emerald-500 rounded-full"></span>
+                                </div>
+                                <p class="text-slate-400 text-[10px]">12.765 Titik Koordinat Terintegrasi</p>
                             </div>
-                            <div class="flex items-center justify-between text-[11px] opacity-40">
-                                <span class="text-slate-500">Global Access</span>
-                                <span class="text-[8px] bg-slate-800 px-1 py-0.5 rounded font-bold text-slate-400 uppercase">Soon</span>
+
+                            <div class="bg-slate-800/30 border border-border-dark p-3 rounded-lg opacity-50">
+                                <div class="flex items-center justify-between text-[11px] mb-1">
+                                    <span class="text-slate-300 font-bold">🌍 Global Access</span>
+                                    <span class="text-[8px] bg-slate-700 px-1 py-0.5 rounded font-bold text-slate-400 uppercase">Soon</span>
+                                </div>
+                                <p class="text-slate-500 text-[10px]">Optimasi NASA JPL (Coming Soon)</p>
                             </div>
-                            <p class="text-slate-500 text-[10px] leading-relaxed mt-2 italic">Saat ini sistem dioptimasi khusus untuk 12.765 titik koordinat di seluruh wilayah hukum Indonesia.</p>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-white/5">
+                            <p class="text-slate-500 text-[10px] leading-relaxed italic">
+                                <span class="material-symbols-outlined text-[12px] align-middle mr-1">info</span>
+                                Sistem saat ini dioptimasi khusus untuk wilayah hukum Indonesia berdasarkan dataset topografi lokal.
+                            </p>
                         </div>
                     </div>
 
@@ -553,6 +596,30 @@
 
             // 7. Save File
             doc.save(`Laporan_Hilal_${new Date().getTime()}.pdf`);
+        }
+
+        // Fungsi untuk Info Profil (Analyst Profile)
+        function showProfileInfo() {
+            alert("👨‍💻 Analyst Profile\n\nNama: Riyandi Muhamad Rizki\nStatus: Mahasiswa Sistem Informasi ITG 2023\nProject: Dibalik Data Professional");
+        }
+
+        // Fungsi untuk Notifikasi
+        function showNotifications() {
+            alert("🔔 Notifikasi\n\nSistem Hilal-Checker berjalan optimal dengan dataset NASA JPL DE421.");
+        }
+
+        // FIX: Responsive Mapping (Auto Resize Map)
+        window.addEventListener('resize', function() {
+            if (map) {
+                setTimeout(() => { map.invalidateSize(); }, 200);
+            }
+        });
+
+        // Update fungsi Toggle Dark Mode agar lebih responsif
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            console.log("Mode: " + (isDark ? "Dark" : "Light"));
         }
     </script>
 </body>
