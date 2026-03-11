@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>HILAL-CHECKER | Dibalik Data Professional</title>
+    <title>HILAL-CHECKER | Dibalik Data</title>
     
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     
@@ -31,65 +31,7 @@
             },
         }
     </script>
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s, color 0.3s; }
-        
-        /* DARK MODE (DEFAULT) */
-        html.dark body { background-color: #131022; color: #f1f5f9; }
-        html.dark .glass-card { background: rgba(255, 255, 255, 0.03); border-color: rgba(50, 17, 212, 0.2); }
-        
-        /* LIGHT MODE (FORCE UPDATES) */
-        html:not(.dark) body { background-color: #f1f5f9; color: #0f172a; }
-        
-        /* Pastikan Card & Border tetap terlihat di Mode Terang */
-        html:not(.dark) .glass-card { 
-            background: rgba(255, 255, 255, 0.9) !important; 
-            border: 1px solid rgba(50, 17, 212, 0.2) !important; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        /* Fix untuk kotak Engine, Algoritma, dan sejenisnya */
-        html:not(.dark) .bg-white\/5 { 
-            background-color: rgba(50, 17, 212, 0.05) !important; 
-            border-color: rgba(50, 17, 212, 0.15) !important; 
-        }
-
-        /* Fix Warna Teks Dashboard & Judul Card agar tidak hilang */
-        html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, 
-        html:not(.dark) .text-white, html:not(.dark) .text-slate-100 { 
-            color: #1e293b !important; 
-        }
-
-        /* Fix Sidebar Text agar Dashboard dkk tetap terbaca */
-        html:not(.dark) aside .text-slate-100, html:not(.dark) aside .text-slate-400 {
-            color: #475569 !important;
-        }
-
-        /* Fix Tombol MULAI ANALISIS (Jika teksnya putih di mode terang) */
-        html:not(.dark) button.bg-primary {
-            color: #ffffff !important; /* Tetap putih karena background tombol biru gelap */
-            box-shadow: 0 4px 14px rgba(50, 17, 212, 0.3);
-        }
-
-        /* Tetap jaga teks abu-abu agar kontras */
-        html:not(.dark) .text-slate-400 { color: #64748b !important; }
-
-        #map { height: 450px; width: 100%; border-radius: 12px; z-index: 10; }
-
-        .progress-container {
-            width: 100%; max-width: 400px; height: 8px;
-            background: rgba(50, 17, 212, 0.1); border-radius: 10px;
-            overflow: hidden; margin: 20px auto;
-        }
-        .progress-bar-fill {
-            width: 0%; height: 100%;
-            background: linear-gradient(90deg, #3211d4, #6366f1);
-            animation: loading-anim 2s infinite ease-in-out;
-        }
-        @keyframes loading-anim {
-            0% { width: 0%; } 50% { width: 70%; } 100% { width: 100%; }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex">
@@ -105,55 +47,49 @@
             </div>
         </div>
         <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white" href="#"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-primary/10 hover:text-primary transition-all" href="#"><span class="material-symbols-outlined">map</span>Peta Global</a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-primary/10 hover:text-primary transition-all" href="#"><span class="material-symbols-outlined">history</span>Riwayat</a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-primary/10 hover:text-primary transition-all" href="#"><span class="material-symbols-outlined">settings</span>Pengaturan</a>
+            <a onclick="resetTampilan()" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white cursor-pointer"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-primary/10 hover:text-primary transition-all cursor-pointer"><span class="material-symbols-outlined">map</span>Peta Global</a>
+            <div class="space-y-1">
+                <a onclick="bukaHalamanRiwayat()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-primary/10 hover:text-primary transition-all font-medium cursor-pointer">
+                    <span class="material-symbols-outlined">history</span>Riwayat
+                </a>
+            </div>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-primary/10 hover:text-primary transition-all cursor-pointer"><span class="material-symbols-outlined">settings</span>Pengaturan</a>
         </nav>
         <div class="mt-auto pt-6 border-t border-border-dark text-center">
-             <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">System Status</p>
-             <div class="flex items-center justify-center gap-2 text-emerald-500 text-xs font-bold mt-1">
-                <span class="size-2 bg-emerald-500 rounded-full animate-pulse"></span> ONLINE
-             </div>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Server Connectivity</p>
+            <div class="flex items-center justify-center gap-2 text-emerald-500 text-xs font-bold mt-1">
+                <span class="size-2 bg-emerald-500 rounded-full animate-pulse"></span> 
+                <span id="serverStatus">STABLE CONNECTION</span>
+            </div>
         </div>
     </aside>
 
     <main class="flex-1 flex flex-col min-w-0">
         <header class="h-20 border-b border-border-dark flex items-center justify-between px-8 bg-background-dark/50 backdrop-blur-md sticky top-0 z-50">
             <div class="flex items-center gap-6">
-                <button id="btnBackHeader" onclick="resetTampilan()" title="Kembali ke Beranda" class="hidden items-center justify-center bg-primary/20 hover:bg-primary/40 text-primary size-10 rounded-xl transition-all border border-primary/30">
+                <button id="btnBackHeader" onclick="resetTampilan()" class="hidden items-center justify-center bg-primary/20 hover:bg-primary/40 text-primary size-10 rounded-xl transition-all border border-primary/30">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </button>
-
                 <div class="h-8 w-px bg-border-dark"></div>
-
                 <div class="flex flex-col">
                     <div class="flex items-center gap-2 text-primary font-bold">
                         <span class="material-symbols-outlined text-sm">schedule</span>
-                        <span id="liveClock" class="text-sm tracking-wide">00:00:00 WIB</span>
+                        <span id="liveClock">00:00:00 WIB</span>
                     </div>
                     <div class="text-slate-400 text-xs font-medium">
                         <span id="tglMasehi">...</span> | <span id="tglHijriah">...</span>
                     </div>
                 </div>
             </div>
-            
             <div class="flex items-center gap-6">
-                <div class="flex items-center gap-2">
-                    <button onclick="showNotifications()" class="size-10 flex items-center justify-center rounded-full bg-slate-800/50 text-slate-300 hover:text-primary transition-colors relative">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-background-dark"></span>
-                    </button>
-                    <button onclick="toggleDarkMode()" class="size-10 flex items-center justify-center rounded-full bg-slate-800/50 text-slate-300 hover:text-primary transition-colors">
-                        <span class="material-symbols-outlined">dark_mode</span>
-                    </button>
-                </div>
-                <div class="h-8 w-px bg-border-dark"></div>
-                
-                <div onclick="showProfileInfo()" class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-all">
+                <button onclick="toggleDarkMode()" class="size-10 flex items-center justify-center rounded-full bg-slate-800/50 text-slate-300 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">dark_mode</span>
+                </button>
+                <div onclick="showProfileInfo()" class="flex items-center gap-3 cursor-pointer">
                     <div class="text-right hidden sm:block">
-                        <p class="text-sm font-bold text-slate-100 dark:text-slate-100">Riyandi</p>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-tighter font-bold">Analyst</p>
+                        <p class="text-sm font-bold text-slate-100">Riyandi</p>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase">Analyst</p>
                     </div>
                     <div class="size-10 rounded-full bg-primary/20 border border-primary/40 overflow-hidden shadow-lg shadow-primary/20">
                         <img src="https://ui-avatars.com/api/?name=Riyandi&background=3211d4&color=fff" class="w-full h-full object-cover">
@@ -165,16 +101,16 @@
         <div id="landingDashboard" class="p-8 space-y-8 max-w-[1400px] mx-auto w-full transition-opacity duration-500">
             <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <div class="xl:col-span-2 glass-card rounded-2xl p-8 flex flex-col justify-center border border-border-dark">
-                    <h2 class="text-3xl font-extrabold text-white mb-2">HILAL CHECKER</h2>
-                    <p class="text-primary font-bold text-xs uppercase tracking-[0.2em] mb-4">Predictive Astronomy Engine | Dibalik Data</p>
+                    <h2 class="text-3xl font-extrabold text-white mb-2 uppercase">Hilal Checker</h2>
+                    <p class="text-primary font-bold text-xs uppercase tracking-widest mb-4">Predictive Astronomy Engine | Dibalik Data</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                            <p class="text-white font-bold text-xs mb-1">ENGINE & ALGORITMA</p>
+                            <p class="text-white font-bold text-xs mb-1 uppercase tracking-wider">Engine & Algoritma</p>
                             <p class="text-slate-400 text-[11px] leading-relaxed">Sistem ini ditenagai oleh <b>Skyfield Engine</b> menggunakan algoritma <b>NASA JPL DE421</b> untuk menghitung posisi presisi Bulan dan Matahari.</p>
                         </div>
                         <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                            <p class="text-white font-bold text-xs mb-1">SUMBER DATA EPHEMERIS</p>
+                            <p class="text-white font-bold text-xs mb-1 uppercase tracking-wider">Sumber Data Ephemeris</p>
                             <p class="text-slate-400 text-[11px] leading-relaxed">Data primer bersumber dari <b>United States Naval Observatory (USNO)</b> dengan integrasi koordinat <b>OpenStreetMap</b>.</p>
                         </div>
                     </div>
@@ -184,7 +120,6 @@
                             <p class="text-white font-bold text-xs uppercase tracking-wider">Cakupan Wilayah Analisis</p>
                             <span class="text-[9px] bg-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded-full font-bold animate-pulse">SISTEM AKTIF</span>
                         </div>
-                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="bg-primary/10 border border-primary/20 p-3 rounded-lg">
                                 <div class="flex items-center justify-between text-[11px] mb-1">
@@ -193,7 +128,6 @@
                                 </div>
                                 <p class="text-slate-400 text-[10px]">12.765 Titik Koordinat Terintegrasi</p>
                             </div>
-
                             <div class="bg-slate-800/30 border border-border-dark p-3 rounded-lg opacity-50">
                                 <div class="flex items-center justify-between text-[11px] mb-1">
                                     <span class="text-slate-300 font-bold">🌍 Global Access</span>
@@ -202,18 +136,11 @@
                                 <p class="text-slate-500 text-[10px]">Optimasi NASA JPL (Coming Soon)</p>
                             </div>
                         </div>
-
-                        <div class="mt-4 pt-3 border-t border-white/5">
-                            <p class="text-slate-500 text-[10px] leading-relaxed italic">
-                                <span class="material-symbols-outlined text-[12px] align-middle mr-1">info</span>
-                                Sistem saat ini dioptimasi khusus untuk wilayah hukum Indonesia berdasarkan dataset topografi lokal.
-                            </p>
-                        </div>
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-4 items-end pt-4 border-t border-white/5">
                         <div class="flex-1 w-full text-left">
-                            <label class="text-[10px] font-bold text-primary uppercase mb-2 block tracking-widest">Pilih Target Observasi</label>
+                            <label class="text-[10px] font-bold text-primary uppercase mb-2 block tracking-widest text-left">Pilih Target Observasi</label>
                             <select id="targetBulan" class="w-full bg-slate-800/50 border-border-dark rounded-xl py-3.5 px-4 text-white font-bold focus:ring-primary">
                                 <option value="auto">🔭 Otomatis (Ijtima' Terdekat)</option>
                                 <option value="ramadhan_1447">🌙 Ramadhan 1447 H (2026)</option>
@@ -222,18 +149,13 @@
                             </select>
                         </div>
                         <button onclick="jalankanPrediksi()" class="bg-primary hover:bg-primary/80 text-white px-8 py-4 rounded-xl font-black tracking-widest flex items-center gap-3 transition-all shadow-lg shadow-primary/20">
-                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">rocket_launch</span> 
-                            MULAI ANALISIS
+                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">rocket_launch</span> MULAI ANALISIS
                         </button>
                     </div>
                 </div>
 
                 <div class="glass-card rounded-2xl p-6 border border-border-dark flex flex-col justify-center">
-                    <h3 class="font-bold text-slate-100 flex items-center gap-2 mb-4">
-                        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1">verified</span> 
-                        Kriteria MABIMS
-                    </h3>
-                    <p class="text-slate-400 text-[11px] mb-6 leading-relaxed">Kesepakatan visibilitas hilal Menteri Agama Brunei, Indonesia, Malaysia, dan Singapura:</p>
+                    <h3 class="font-bold text-slate-100 flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary">verified</span> Kriteria MABIMS</h3>
                     <ul class="space-y-4">
                         <li class="bg-slate-800/30 p-4 rounded-xl border border-border-dark">
                             <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Tinggi Minimal</p>
@@ -248,11 +170,21 @@
             </section>
         </div>
 
-        <div id="loadingSection" class="hidden flex flex-col items-center justify-center min-h-[400px] w-full">
-            <div class="progress-container">
-                <div class="progress-bar-fill"></div>
+        <div id="loadingSection" class="hidden fixed inset-0 bg-background-dark/90 backdrop-blur-xl z-[9999] flex flex-col items-center justify-center">
+            <div class="relative size-24 mb-8">
+                <div class="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                <div class="absolute inset-4 border-2 border-emerald-500/30 border-b-transparent rounded-full animate-[spin_1.5s_linear_infinite]"></div>
             </div>
-            <p class="text-primary font-bold tracking-widest animate-pulse uppercase">Mengkalkulasi 12.765 Titik Koordinat...</p>
+            
+            <div class="text-center">
+                <p id="loadingText" class="text-white font-black text-xl tracking-[0.2em] uppercase mb-2">Synchronizing JPL Data</p>
+                <div class="flex items-center justify-center gap-3">
+                    <span class="size-1.5 bg-primary rounded-full animate-bounce"></span>
+                    <span class="size-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="size-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </div>
+            </div>
         </div>
 
         <div id="resultContainer" class="hidden p-8 space-y-8 max-w-[1400px] mx-auto w-full transition-opacity duration-500">
@@ -262,365 +194,79 @@
                     <span class="material-symbols-outlined text-sm">arrow_back</span> Kembali
                 </button>
             </div>
-
             <section class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-4">
                 <div class="glass-card p-5 rounded-2xl border border-border-dark"><p class="text-slate-400 text-xs mb-1 font-bold">Tinggi Max</p><p id="valAlt" class="text-white text-2xl font-bold">-</p></div>
                 <div class="glass-card p-5 rounded-2xl border border-border-dark"><p class="text-slate-400 text-xs mb-1 font-bold">Elongasi Max</p><p id="valElong" class="text-white text-2xl font-bold">-</p></div>
                 <div class="glass-card p-5 rounded-2xl border border-border-dark"><p class="text-slate-400 text-xs mb-1 font-bold">Ijtima</p><p id="valIjtima" class="text-white text-2xl font-bold">-</p></div>
-                <div class="glass-card p-5 rounded-2xl border border-border-dark"><p class="text-slate-400 text-xs mb-1 font-bold">Tanggal Observasi</p><p id="valDate" class="text-white text-xl font-bold">-</p></div>
-                <div class="glass-card p-5 rounded-2xl border border-border-dark"><p class="text-slate-400 text-xs mb-1 font-bold">Umur Hilal</p><p id="valUmur" class="text-white text-2xl font-bold">-</p></div>
+                <div class="glass-card p-5 rounded-2xl border border-border-dark"><p class="text-slate-400 text-xs mb-1 font-bold">Tanggal</p><p id="valDate" class="text-white text-xl font-bold">-</p></div>
+                <div class="glass-card p-5 rounded-2xl border border-border-dark"><p class="text-slate-400 text-xs mb-1 font-bold">Umur</p><p id="valUmur" class="text-white text-2xl font-bold">-</p></div>
                 <div class="glass-card p-5 rounded-2xl border border-border-dark"><p class="text-slate-400 text-xs mb-1 font-bold">Iluminasi</p><p id="valIluminasi" class="text-white text-2xl font-bold">-</p></div>
                 <div class="glass-card p-5 rounded-2xl border border-border-dark"><p class="text-slate-400 text-xs mb-1 font-bold">Mukuts</p><p id="valLag" class="text-white text-2xl font-bold">-</p></div>
             </section>
-
             <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                <div class="xl:col-span-2 glass-card rounded-2xl p-2 h-[470px] border border-border-dark relative">
-                    <div id="map"></div>
+                <div class="xl:col-span-2 glass-card rounded-2xl p-2 h-[470px] border border-border-dark relative overflow-hidden">
+                    <div id="map" class="h-[450px] rounded-xl overflow-hidden relative">
+                        </div>
+                    <div id="mapLegend" class="absolute bottom-6 left-6 z-[1000] glass-card p-4 rounded-xl border border-primary/30 backdrop-blur-xl">
+                        <p class="text-white font-bold text-[10px] mb-2 uppercase tracking-widest border-b border-white/10 pb-1">Keterangan</p>
+                        <div class="flex items-center gap-2">
+                            <span class="size-2 rounded-full bg-[#3211d4]"></span>
+                            <span class="text-[9px] text-slate-300">Memenuhi Kriteria</span>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="size-2 rounded-full bg-[#4b5563]"></span>
+                            <span class="text-[9px] text-slate-300">Belum Memenuhi</span>
+                        </div>
+                    </div>
                 </div>
-                
                 <div class="space-y-6">
                     <div class="glass-card p-6 rounded-2xl border border-border-dark">
                         <h3 class="font-bold text-slate-100 mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">location_on</span> Cek Titik Spesifik
                         </h3>
                         <div class="space-y-3">
-                            <input type="text" id="inputLokasi" placeholder="Contoh: Bosscha..." class="w-full bg-slate-800/50 border-border-dark rounded-xl py-3 px-4 text-white text-sm">
-                            <button onclick="cariLokasiSpesifik()" class="w-full bg-slate-100 text-background-dark font-bold py-3 rounded-xl hover:bg-white transition-all shadow-lg">CARI & ANALISIS</button>
+                            <input type="text" id="inputLokasi" placeholder="Contoh: Bosscha..." class="w-full bg-slate-800/50 border-border-dark rounded-xl py-3 px-4 text-white text-sm focus:ring-primary focus:border-primary">
+                            <button onclick="cariLokasiSpesifik()" class="w-full bg-primary hover:bg-primary/80 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-primary/20">
+                                CARI & ANALISIS
+                            </button>
                             <p id="pesanLokasi" class="text-[10px] text-primary font-bold text-center hidden uppercase animate-pulse">Menghitung Data NASA...</p>
                         </div>
                     </div>
-
                     <div class="glass-card p-6 rounded-2xl border border-border-dark bg-primary/10">
-                        <h3 id="statusMabims" class="font-black text-white text-lg mb-2 italic">KESIMPULAN: -</h3>
-                        <p id="pesanEdukasi" class="text-slate-400 text-xs leading-relaxed mb-4">Harap tunggu kalkulasi...</p>
-                        <div class="border-t border-primary/20 pt-3 mt-2">
-                            <p id="runTimestamp" class="text-[10px] text-primary/60 font-bold uppercase tracking-tighter italic">Waktu Analisis: -</p>
-                        </div>
+                        <h3 id="statusMabims" class="font-black text-white text-lg mb-2 italic uppercase">KESIMPULAN: -</h3>
+                        <p id="pesanEdukasi" class="text-slate-400 text-xs leading-relaxed">Harap tunggu kalkulasi...</p>
                     </div>
                 </div>
             </section>
-
-            <div class="flex gap-4">
-                <button onclick="unduhLaporanPDF()" class="flex-1 bg-primary hover:bg-primary/90 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 shadow-lg">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="unduhLaporanPDF()" class="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 shadow-lg shadow-primary/20 transition-all">
                     <span class="material-symbols-outlined">picture_as_pdf</span> UNDUH LAPORAN PDF (ENTERPRISE)
+                </button>
+
+                <button onclick="shareHasil()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/20 transition-all">
+                    <span class="material-symbols-outlined">content_copy</span> SALIN LAPORAN WHATSAPP
                 </button>
             </div>
         </div>
 
+        <div id="historyPage" class="hidden p-8 space-y-8 max-w-[1400px] mx-auto w-full transition-opacity duration-500">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-black text-white uppercase tracking-tight">RIWAYAT ANALISIS</h2>
+                <button onclick="resetTampilan()" class="text-slate-400 hover:text-white flex items-center gap-2 text-sm font-bold">
+                    <span class="material-symbols-outlined text-sm">arrow_back</span> Kembali ke Dashboard
+                </button>
+            </div>
+            <div id="historyFullList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+        </div>
+
         <footer class="mt-auto border-t border-border-dark py-6 px-8 flex justify-center items-center">
-            <p class="text-slate-500 text-xs font-medium uppercase tracking-widest font-bold">
-                © 2026 <span class="text-primary font-black">Riyandi Muhamad Rizki</span> | Hak Cipta Dilindungi.
+            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em]">
+                © 2026 <span class="text-primary">Riyandi Muhamad Rizki</span> | Dibalik Data
             </p>
         </footer>
     </main>
 
-    <script>
-        let map;
-        let specialMarker = null;
-
-        window.onload = function() {
-            updateDates();
-            setInterval(updateClock, 1000);
-            updateClock();
-            
-            // Check saved theme
-            if (localStorage.getItem('theme') === 'light') {
-                document.documentElement.classList.remove('dark');
-            }
-        };
-
-        function updateDates() {
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('tglMasehi').innerText = today.toLocaleDateString('id-ID', options);
-
-            let dd = String(today.getDate()).padStart(2, '0');
-            let mm = String(today.getMonth() + 1).padStart(2, '0');
-            let yyyy = today.getFullYear();
-            
-            fetch(`https://api.aladhan.com/v1/gToH?date=${dd}-${mm}-${yyyy}&adjustment=-1`)
-                .then(r => r.json())
-                .then(data => {
-                    let hijri = data.data.hijri;
-                    document.getElementById('tglHijriah').innerText = `${hijri.day} ${hijri.month.en} ${hijri.year} H`;
-                });
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('liveClock').innerText = now.toLocaleTimeString('id-ID') + " WIB";
-        }
-
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
-
-        function jalankanPrediksi() {
-            // 1. Tampilan awal loading
-            document.getElementById('landingDashboard').classList.add('hidden');
-            document.getElementById('loadingSection').classList.remove('hidden');
-            document.getElementById('resultContainer').classList.add('hidden');
-
-            let target = document.getElementById('targetBulan').value;
-            
-            // 2. Ambil data dari API
-            fetch('/api/predict?target=' + target)
-                .then(r => {
-                    if (!r.ok) throw new Error("Gagal mendapatkan data prediksi");
-                    return r.json();
-                })
-                .then(res => {
-                    const data = res.data;
-                    
-                    // 3. Update metrik data di UI
-                    document.getElementById('valAlt').innerText = data.max_alt.toFixed(2) + '°';
-                    document.getElementById('valElong').innerText = data.max_elong.toFixed(2) + '°';
-                    document.getElementById('valIjtima').innerText = data.waktu_ijtima.split('|')[1];
-                    document.getElementById('valDate').innerText = data.tgl_obs_raw;
-                    document.getElementById('valUmur').innerText = data.umur_hilal + ' J';
-                    document.getElementById('valIluminasi').innerText = data.iluminasi + ' %';
-                    document.getElementById('valLag').innerText = data.lag_time + ' M';
-
-                    // 4. Update Timestamp Real-time (Waktu Klik)
-                    const now = new Date();
-                    const timeStr = now.toLocaleString('id-ID', { 
-                        day: '2-digit', month: 'long', year: 'numeric', 
-                        hour: '2-digit', minute: '2-digit', second: '2-digit' 
-                    });
-                    document.getElementById('runTimestamp').innerText = `Waktu Analisis: ${timeStr} WIB`;
-
-                    // 5. Update Kesimpulan MABIMS
-                    let isLolos = (data.max_alt >= 3.0 && data.max_elong >= 6.4);
-                    document.getElementById('statusMabims').innerText = 'KESIMPULAN: ' + (isLolos ? "✅ LOLOS MABIMS" : "❌ BELUM LOLOS");
-                    document.getElementById('pesanEdukasi').innerText = `Analisis NASA menunjukkan pada ${data.tgl_obs_raw} hilal ${isLolos ? "sudah" : "belum"} memenuhi standar visibilitas MABIMS di wilayah Indonesia.`;
-
-                    // 6. Tampilkan Hasil & Tombol Kembali di Header
-                    document.getElementById('loadingSection').classList.add('hidden');
-                    document.getElementById('resultContainer').classList.remove('hidden');
-                    
-                    // Logika memunculkan tombol kembali di header (Ganti hidden jadi flex)
-                    const btnBack = document.getElementById('btnBackHeader');
-                    if(btnBack) {
-                        btnBack.classList.remove('hidden');
-                        btnBack.classList.add('flex');
-                    }
-                    
-                    renderPeta(data.points);
-                })
-                .catch(err => {
-                    alert("Error: " + err.message);
-                    resetTampilan();
-                });
-        }
-
-        function resetTampilan() {
-            document.getElementById('resultContainer').classList.add('hidden');
-            document.getElementById('loadingSection').classList.add('hidden');
-            document.getElementById('landingDashboard').classList.remove('hidden');
-            
-            // Logika menyembunyikan tombol kembali di header
-            const btnBack = document.getElementById('btnBackHeader');
-            if(btnBack) {
-                btnBack.classList.remove('flex');
-                btnBack.classList.add('hidden');
-            }
-        }
-
-        function renderPeta(points) {
-            if(!map) {
-                map = L.map('map').setView([-2.5, 118], 5);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-            }
-            map.eachLayer((l) => { if(!!l.toGeoJSON) map.removeLayer(l); });
-            points.forEach((p, i) => {
-                if (i % 20 === 0 && p.tinggi > 0) {
-                    let isPass = (p.tinggi >= 3.0 && p.elongasi >= 6.4);
-                    L.circleMarker([p.lat, p.lon], { radius: isPass ? 4 : 2, color: isPass ? '#3211d4' : '#4b5563', fillOpacity: 0.8 }).addTo(map);
-                }
-            });
-        }
-
-        function cariLokasiSpesifik() {
-            let q = document.getElementById('inputLokasi').value;
-            if(!q) return alert("Masukkan nama lokasi!");
-            
-            document.getElementById('pesanLokasi').classList.remove('hidden');
-            
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=id`)
-                .then(r => r.json())
-                .then(geo => {
-                    if (geo.length === 0) {
-                        alert("Lokasi tidak ditemukan!");
-                        document.getElementById('pesanLokasi').classList.add('hidden');
-                        return;
-                    }
-                    
-                    let lat = geo[0].lat, lon = geo[0].lon;
-                    let namaTempat = geo[0].display_name.split(",")[0];
-                    
-                    fetch(`/api/location?lat=${lat}&lon=${lon}&target=${document.getElementById('targetBulan').value}`)
-                        .then(r => r.json())
-                        .then(astro => {
-                            document.getElementById('pesanLokasi').classList.add('hidden');
-                            map.setView([lat, lon], 10);
-                            
-                            let statusWarna = astro.is_pass ? "#3211d4" : "#ef4444";
-                            let statusTeks = astro.is_pass ? "✅ LOLOS MABIMS" : "❌ TIDAK LOLOS";
-
-                            let content = `
-                                <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 200px; color: #131022;">
-                                    <h4 style="margin:0 0 5px 0; color:#3211d4;">📍 ${namaTempat}</h4>
-                                    <p style="margin:0 0 10px 0; font-size:10px; color:#666;">Lat: ${parseFloat(lat).toFixed(4)}, Lon: ${parseFloat(lon).toFixed(4)}</p>
-                                    
-                                    <table style="width:100%; font-size:12px; margin-bottom:10px; border-collapse: collapse;">
-                                        <tr><td style="padding: 2px 0;">Tinggi Hilal</td><td>: <b>${astro.tinggi}°</b></td></tr>
-                                        <tr><td style="padding: 2px 0;">Elongasi</td><td>: <b>${astro.elongasi}°</b></td></tr>
-                                        <tr><td style="padding: 2px 0;">Umur Hilal</td><td>: <b>${astro.umur} Jam</b></td></tr>
-                                        <tr><td style="padding: 2px 0;">Iluminasi</td><td>: <b>${astro.iluminasi}%</b></td></tr>
-                                        <tr><td style="padding: 2px 0;">Mukuts</td><td>: <b>${astro.lag_time} m</b></td></tr>
-                                        <tr style="border-top: 1px dashed #ccc;">
-                                            <td style="padding: 5px 0 2px 0; color: #E65100; font-weight: bold;">☁️ Cuaca</td>
-                                            <td style="padding: 5px 0 2px 0; color: #E65100;">: <b>${astro.cloud_cover}% (${astro.cuaca_status})</b></td>
-                                        </tr>
-                                    </table>
-
-                                    <div style="background:${statusWarna}; color:white; padding:6px; text-align:center; border-radius:6px; font-weight:bold; font-size:11px;">
-                                        ${statusTeks}
-                                    </div>
-                                    ${astro.cloud_cover >= 75 ? `<p style="margin: 5px 0 0 0; font-size: 9px; color: #ef4444; text-align: center;">⚠️ <i>Terhalang mendung tebal</i></p>` : ''}
-                                </div>
-                            `;
-                            L.popup().setLatLng([lat, lon]).setContent(content).openOn(map);
-                        });
-                });
-        }
-
-        function resetTampilan() {
-            document.getElementById('resultContainer').classList.add('hidden');
-            document.getElementById('landingDashboard').classList.remove('hidden');
-        }
-
-        function unduhLaporanPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const clean = (t) => t.replace(/[^\x00-\x7F]/g, "").trim();
-
-            // 1. Header Background
-            doc.setFillColor(50, 17, 212);
-            doc.rect(0, 0, 210, 40, 'F');
-            
-            // 2. Header Text
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(24);
-            doc.setTextColor(255, 255, 255);
-            doc.text("HILAL-CHECKER", 20, 22);
-            
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "normal");
-            doc.text("Professional Observation Report | Powered by Dibalik Data", 20, 30);
-            doc.text("Analyst: Riyandi Muhamad Rizki", 140, 22);
-            doc.text("Sistem: NASA JPL DE421 Ephemeris", 140, 28); // Disesuaikan agar lebih general
-
-            // 3. Judul Laporan Dinamis
-            doc.setFontSize(16);
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(50, 17, 212);
-            const safeTitle = clean(document.getElementById('eventTitle').innerText);
-            doc.text(safeTitle, 20, 55);
-            
-            doc.setDrawColor(200);
-            doc.line(20, 60, 190, 60);
-
-            // 4. Tabel Data Astronomi
-            doc.setFontSize(11);
-            doc.setTextColor(0);
-            doc.text("DATA ASTRONOMI & EPHEMERIS:", 20, 70);
-
-            const dataTable = [
-                ["Tinggi Hilal Max", document.getElementById('valAlt').innerText],
-                ["Sudut Elongasi Max", document.getElementById('valElong').innerText],
-                ["Waktu Ijtima' (WIB)", document.getElementById('valIjtima').innerText],
-                ["Tanggal Observasi", document.getElementById('valDate').innerText],
-                ["Umur Hilal", document.getElementById('valUmur').innerText],
-                ["Fraksi Iluminasi", document.getElementById('valIluminasi').innerText],
-                ["Mukuts (Lag Time)", document.getElementById('valLag').innerText]
-            ];
-
-            let y = 80;
-            dataTable.forEach(row => {
-                doc.setFont("helvetica", "normal");
-                doc.setFillColor(245, 245, 250);
-                doc.rect(20, y - 5, 170, 7, 'F');
-                doc.text(row[0], 25, y);
-                doc.setFont("helvetica", "bold");
-                doc.text(": " + row[1], 80, y);
-                y += 8;
-            });
-
-            // 5. Logika Status & Pesan Edukasi (Dinamis)
-            const tglObs = document.getElementById('valDate').innerText;
-            const rawStatus = document.getElementById('statusMabims').innerText;
-            const isLolos = rawStatus.includes("✅");
-            
-            doc.setFontSize(14);
-            doc.setFont("helvetica", "bold");
-            if(isLolos) {
-                doc.setTextColor(46, 125, 50);
-                doc.text("STATUS: MEMENUHI KRITERIA MABIMS", 20, 150);
-            } else {
-                doc.setTextColor(239, 68, 68);
-                doc.text("STATUS: BELUM MEMENUHI KRITERIA (ISTIKMAL)", 20, 150);
-            }
-
-            // Bagian yang Bos minta: Menghapus "Analisis NASA" dan mengikuti tanggal sistem
-            doc.setFontSize(10);
-            doc.setTextColor(100);
-            doc.setFont("helvetica", "italic");
-            
-            const narasiDinamis = `Berdasarkan parameter astronomi pada ${tglObs}, hasil perhitungan sistem menunjukkan bahwa hilal ${isLolos ? "sudah" : "belum"} memenuhi standar visibilitas MABIMS di wilayah hukum Indonesia.`;
-            
-            const splitEdukasi = doc.splitTextToSize(narasiDinamis, 170);
-            doc.text(splitEdukasi, 20, 160);
-
-            // 6. Footer
-            doc.setFontSize(8);
-            doc.setTextColor(150);
-            doc.setFont("helvetica", "normal");
-            const printedAt = new Date().toLocaleString('id-ID', { 
-                day: '2-digit', month: '2-digit', year: 'numeric', 
-                hour: '2-digit', minute: '2-digit', second: '2-digit' 
-            });
-            doc.text("© 2026 Riyandi Muhamad Rizki | Hak Cipta Dilindungi", 105, 280, { align: "center" });
-            doc.text("Dicetak pada: " + printedAt + " WIB", 105, 285, { align: "center" });
-
-            // 7. Save File
-            doc.save(`Laporan_Hilal_${new Date().getTime()}.pdf`);
-        }
-
-        // Fungsi untuk Info Profil (Analyst Profile)
-        function showProfileInfo() {
-            alert("👨‍💻 Analyst Profile\n\nNama: Riyandi Muhamad Rizki\nStatus: Mahasiswa Sistem Informasi ITG 2023\nProject: Dibalik Data Professional");
-        }
-
-        // Fungsi untuk Notifikasi
-        function showNotifications() {
-            alert("🔔 Notifikasi\n\nSistem Hilal-Checker berjalan optimal dengan dataset NASA JPL DE421.");
-        }
-
-        // FIX: Responsive Mapping (Auto Resize Map)
-        window.addEventListener('resize', function() {
-            if (map) {
-                setTimeout(() => { map.invalidateSize(); }, 200);
-            }
-        });
-
-        // Update fungsi Toggle Dark Mode agar lebih responsif
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            console.log("Mode: " + (isDark ? "Dark" : "Light"));
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

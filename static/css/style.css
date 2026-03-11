@@ -1,0 +1,54 @@
+body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s, color 0.3s; }
+
+/* DARK MODE (DEFAULT) */
+html.dark body { background-color: #131022; color: #f1f5f9; }
+html.dark .glass-card { background: rgba(255, 255, 255, 0.03); border-color: rgba(50, 17, 212, 0.2); }
+
+/* LIGHT MODE (FORCE UPDATES) */
+html:not(.dark) body { background-color: #f1f5f9; color: #0f172a; }
+
+html:not(.dark) .glass-card { 
+    background: rgba(255, 255, 255, 0.9) !important; 
+    border: 1px solid rgba(50, 17, 212, 0.2) !important; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+html:not(.dark) .bg-white\/5 { 
+    background-color: rgba(50, 17, 212, 0.05) !important; 
+    border-color: rgba(50, 17, 212, 0.15) !important; 
+}
+
+html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, 
+html:not(.dark) .text-white, html:not(.dark) .text-slate-100 { 
+    color: #1e293b !important; 
+}
+
+html:not(.dark) aside .text-slate-100, html:not(.dark) aside .text-slate-400 {
+    color: #475569 !important;
+}
+
+html:not(.dark) button.bg-primary {
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(50, 17, 212, 0.3);
+}
+
+html:not(.dark) .text-slate-400 { color: #64748b !important; }
+
+#map { height: 450px; width: 100%; border-radius: 12px; z-index: 10; }
+
+.progress-container {
+    width: 100%; max-width: 400px; height: 8px;
+    background: rgba(50, 17, 212, 0.1); border-radius: 10px;
+    overflow: hidden; margin: 20px auto;
+}
+.progress-bar-fill {
+    width: 0%; height: 100%;
+    background: linear-gradient(90deg, #3211d4, #6366f1);
+    animation: loading-anim 2s infinite ease-in-out;
+}
+@keyframes loading-anim {
+    0% { width: 0%; } 50% { width: 70%; } 100% { width: 100%; }
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(50, 17, 212, 0.3); border-radius: 10px; }
